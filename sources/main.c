@@ -6,7 +6,7 @@
 /*   By: fbrisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 10:15:37 by fbrisson          #+#    #+#             */
-/*   Updated: 2023/03/18 15:18:09 by fbrisson         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:46:43 by fbrisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,116 +20,47 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void	ratio_rectangle(t_data img, int y, int x, int color)
+int	close_window(int keycode, t_vars *vars)
 {
-	int	i;
-	int	j;
-	
-	i = 0;
-	while (i < y)
-	{
-		j = 0;
-		while (j < x)
-		{
-			if ((j > x * 0.15 && j < x * 0.85) && (i > y * 0.15 && i < y * 0.85))
-				my_mlx_pixel_put(&img, i, j, color);
-			j++;
-		}
-		i++;
-	}
-}
-
-void	bresenham_circle_draw(t_data img, int xctr, int yctr, int x, int y, int color)
-{
-	my_mlx_pixel_put(&img, xctr + x, yctr + y, color);
-	my_mlx_pixel_put(&img, xctr - x, yctr + y, color);
-	my_mlx_pixel_put(&img, xctr + x, yctr - y, color);
-	my_mlx_pixel_put(&img, xctr - x, yctr - y, color);
-	my_mlx_pixel_put(&img, xctr + y, yctr + x, color);
-	my_mlx_pixel_put(&img, xctr - y, yctr + x, color);
-	my_mlx_pixel_put(&img, xctr + y, yctr - x, color);
-	my_mlx_pixel_put(&img, xctr - y, yctr - x, color);
-}
-
-void	bresenham_circle(t_data img, int x1, int y1, int r, int color)
-{
-	int	x;
-	int	y;
-	int	p;
-
-	while (r > 0)
-	{
-		x = 0;
-		y = r;
-		p = 1 - r;
-		bresenham_circle_draw(img, x1, y1, x, y, color);
-		while (x < y && r > 0)
-		{
-			x++;
-			if (p < 0)
-				p += 2 * x + 1;
-			else
-			{
-				y--;
-				p += 2 * (x - y) + 1;
-			}
-			bresenham_circle_draw(img, x1, y1, x, y, color);
-		}
-		r--;
-	}
-}
-
-void	triforce_maker(t_data img, int y, int x, int color)
-{
-	int	i;
-	int	j;
-	float	klow;
-	float	khigh;
-
-	i = 0;
-	klow = 0.40;
-	khigh = 0.60;
-	while (i < x)
-	{
-		j = 0;
-		while (j < i)
-		{
-			if ((klow == 0.50) || (khigh == 0.50))
-				break ;
-			if ((j > x * klow && j < x * khigh) && (i > y * 0.40 && i < y * 0.60))
-			{
-				my_mlx_pixel_put(&img, i, j, color);
-				klow += 0.01;
-				khigh -= 0.01;
-			}
-			j++;
-		}
-		i++;
-	}
+	if (keycode == 27)
+		mlx_destroy_window(vars->mlx, vars->mlx_window);
+	return (0);
 }
 
 int	main(void)
 {
-	void	*mlx;
-	void	*mlx_window;
 	t_data		img;
-	int	y_res;
+	t_vars		vars;
 	int	x_res;
+	int	y_res;
+	int	triforce_color;
 
-	y_res = 1920;
-	x_res = 1080;
-	mlx = mlx_init();
-	mlx_window = mlx_new_window(mlx, y_res, x_res, "Hello world MAGGLE");
-	img.img = mlx_new_image(mlx, y_res, x_res);
+	x_res = 1920;
+	y_res = 1080;
+	vars.mlx = mlx_init();
+	vars.mlx_window = mlx_new_window(vars.mlx, x_res, y_res, "FRACTOL DE FOU EN VRAI");
+
+	mlx_hook(vars.mlx_window, 2, 1L<<0, close_window(27, &vars), &vars);
+
+	img.img = mlx_new_image(vars.mlx, x_res, y_res);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
-	ratio_rectangle(img, y_res, x_res, 0x00FA8072);
+	// rectangle, circle and triforce
 
-	bresenham_circle(img, y_res / 2, x_res / 2, 325, 0x00D8BFD8);
+	ratio_rectangle(img, x_res, y_res, 0x004B0082);
 
-	//triforce_maker(img, y_res / 2, x_res / 2, 0x00DAA520);
+	bresenham_circle(img, x_res / 2, y_res / 2, 325, 0x00E6E6FA);
+	bresenham_surligner(img, x_res / 2, y_res / 2, 325, add_shade(0.15, 0x00CD853F));
 
-	mlx_put_image_to_window(mlx, mlx_window, img.img, 0, 0);
-	mlx_loop(mlx);
+	triforce_color = 0x00DAA520;
+	triforce_maker(img, x_res / 2, y_res / 2 - 200, add_shade(0.99, triforce_color));
+	triforce_maker(img, x_res / 2 + (150 * 0.75), y_res / 2 - 50, add_shade(0.96, triforce_color));
+	triforce_maker(img, x_res / 2 - (150 * 0.75), y_res / 2 - 50, add_shade(0.93, triforce_color));
+	triforce_surligner(img, x_res / 2, y_res / 2 - 200, add_shade(0.5, 0x004B0082));
+
+	mlx_put_image_to_window(vars.mlx, vars.mlx_window, img.img, 0, 0);
+	mlx_loop(vars.mlx);
+	free(vars.mlx_window);
+	free(vars.mlx);
 	return (0);
 }

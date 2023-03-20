@@ -6,7 +6,7 @@
 #    By: fbrisson <fbrisson@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/28 12:42:06 by fbrisson          #+#    #+#              #
-#    Updated: 2023/03/18 11:42:39 by fbrisson         ###   ########.fr        #
+#    Updated: 2023/03/20 16:06:33 by fbrisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,8 @@ SHELL = /bin/zsh
 NAME = fractol
 
 SOURCES = sources/main.c              		\
+	  sources/colors_handler.c		\
+	  sources/basic_forms.c			\
 
 OBJECTS = ${SOURCES:.c=.o}
 
