@@ -6,7 +6,7 @@
 /*   By: fbrisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 10:15:37 by fbrisson          #+#    #+#             */
-/*   Updated: 2023/03/20 18:46:43 by fbrisson         ###   ########.fr       */
+/*   Updated: 2023/03/21 15:12:18 by fbrisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,47 +20,89 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-int	close_window(int keycode, t_vars *vars)
+int	handle_no_event(void *data)
 {
-	if (keycode == 27)
-		mlx_destroy_window(vars->mlx, vars->mlx_window);
+	return (0);
+}
+
+int	handle_keypress(int keycode, t_data *data)
+{
+	if (keycode == 65307)
+		mlx_destroy_window(data->mlx_ptr, data->mlx_window);
+	printf("key pressed : %d\n", keycode);
+	return (0);
+}
+
+int	handle_keyrelease(int keycode, void *data)
+{
+	printf("key released : %d\n", keycode);
+	return (0);
+}
+
+int	handle_mouse_click(int keycode, void *data)
+{
+	
+}
+
+int	handle_mouse_motion(int x, int y, void *data)
+{
+	if ((x < 0) || (y < 0) || (x > WINDOW_HEIGHT) || (y > WINDOW_HEIGHT))
+		printf("ciao mon gars\n");
+	else
+		printf("bienvenue maggle\n");
 	return (0);
 }
 
 int	main(void)
 {
 	t_data		img;
-	t_vars		vars;
-	int	x_res;
-	int	y_res;
+	t_data		data;
 	int	triforce_color;
 
-	x_res = 1920;
-	y_res = 1080;
-	vars.mlx = mlx_init();
-	vars.mlx_window = mlx_new_window(vars.mlx, x_res, y_res, "FRACTOL DE FOU EN VRAI");
+	// INITIALIZING THE MLX WINDOW
 
-	mlx_hook(vars.mlx_window, 2, 1L<<0, close_window(27, &vars), &vars);
+	data.mlx_ptr = mlx_init();
+	if (data.mlx_ptr == NULL)
+		return (0);
 
-	img.img = mlx_new_image(vars.mlx, x_res, y_res);
+	data.mlx_window = mlx_new_window(data.mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "FRACTOL DE FOU EN VRAI");
+	if (data.mlx_window == NULL)
+		return (free(data.mlx_window), 0);
+
+	img.img = mlx_new_image(data.mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
 
-	// rectangle, circle and triforce
+	// SETTING UP EVENTS
 
-	ratio_rectangle(img, x_res, y_res, 0x004B0082);
+	mlx_loop_hook(data.mlx_ptr, &handle_no_event, &data);
+	mlx_hook(data.mlx_window, 2, 1L << 0, &handle_keypress, &data);
+	mlx_hook(data.mlx_window, 6, 1L << 6, &handle_mouse_motion, &data);
 
-	bresenham_circle(img, x_res / 2, y_res / 2, 325, 0x00E6E6FA);
-	bresenham_surligner(img, x_res / 2, y_res / 2, 325, add_shade(0.15, 0x00CD853F));
+	// HAVING FUN WITH SHAPES AND COLORS
+
+	ratio_rectangle(img, WINDOW_WIDTH, WINDOW_HEIGHT, 0x004B0082);
+
+	bresenham_circle(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, 0x00E6E6FA);
+	bresenham_surligner(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, add_shade(0.15, 0x00CD853F));
 
 	triforce_color = 0x00DAA520;
-	triforce_maker(img, x_res / 2, y_res / 2 - 200, add_shade(0.99, triforce_color));
-	triforce_maker(img, x_res / 2 + (150 * 0.75), y_res / 2 - 50, add_shade(0.96, triforce_color));
-	triforce_maker(img, x_res / 2 - (150 * 0.75), y_res / 2 - 50, add_shade(0.93, triforce_color));
-	triforce_surligner(img, x_res / 2, y_res / 2 - 200, add_shade(0.5, 0x004B0082));
+	triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.25, add_shade(0.99, triforce_color));
+	triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 1.17, WINDOW_HEIGHT * 0.45, add_shade(0.96, triforce_color));
+	triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 0.83, WINDOW_HEIGHT * 0.45, add_shade(0.93, triforce_color));
+	triforce_surligner(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 * 0.50, add_shade(0.5, 0x004B0082));
 
-	mlx_put_image_to_window(vars.mlx, vars.mlx_window, img.img, 0, 0);
-	mlx_loop(vars.mlx);
-	free(vars.mlx_window);
-	free(vars.mlx);
+	// SEND IMAGE TO MLX WINDOW
+
+	mlx_put_image_to_window(data.mlx_ptr, data.mlx_window, img.img, 0, 0);
+
+	// STARTING THE LOOP
+
+	mlx_loop(data.mlx_ptr);
+
+	// HANDLING END OF PROGRAM
+
+	mlx_destroy_image(data.mlx_ptr, img.img);
+	mlx_destroy_display(data.mlx_ptr);
+	free(data.mlx_ptr);
 	return (0);
 }

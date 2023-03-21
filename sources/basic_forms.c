@@ -6,7 +6,7 @@
 /*   By: fbrisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 15:48:44 by fbrisson          #+#    #+#             */
-/*   Updated: 2023/03/20 17:43:33 by fbrisson         ###   ########.fr       */
+/*   Updated: 2023/03/21 12:23:19 by fbrisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ratio_rectangle(t_data img, int x, int y, int color)
 		j = 0;
 		while (j < y)
 		{
-			if ((i > x * 0.15 && i < x * 0.85) && (j > y * 0.15 && j < y * 0.85))
+			if ((i > x * 0.10 && i < x * 0.90) && (j > y * 0.10 && j < y * 0.90))
 				my_mlx_pixel_put(&img, i, j, color);
 			j++;
 		}
@@ -95,7 +95,7 @@ void	bresenham_surligner(t_data img, int x1, int y1, int r, int color)
 	}
 }
 
-void	triforce_maker(t_data img, int x, int y, int color)
+void	triforce_maker(t_data img, int y1, int x, int y, int color)
 {
 	int	i;
 	int	j;
@@ -103,7 +103,7 @@ void	triforce_maker(t_data img, int x, int y, int color)
 	int	size;
 
 	i = 0;
-	size = 150;
+	size = y1 * 0.20;
 	j = size;
 	my_mlx_pixel_put(&img, x, y, color);
 	while (j > 0)
@@ -123,7 +123,7 @@ void	triforce_maker(t_data img, int x, int y, int color)
 	}
 }
 
-void	triforce_surligner(t_data img, int x, int y, int color)
+void	triforce_surligner(t_data img, int y1, int x, int y, int color)
 {
 	int	i;
 	int	j;
@@ -132,7 +132,7 @@ void	triforce_surligner(t_data img, int x, int y, int color)
 	int	size;
 
 	i = 1;
-	size = 300;
+	size = (y1 * 0.20) * 2;
 	my_mlx_pixel_put(&img, x, y, color);
 	while (i < size)
 	{

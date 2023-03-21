@@ -6,7 +6,7 @@
 #    By: fbrisson <fbrisson@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/28 12:42:06 by fbrisson          #+#    #+#              #
-#    Updated: 2023/03/20 16:06:33 by fbrisson         ###   ########.fr        #
+#    Updated: 2023/03/21 13:41:17 by fbrisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ CLEANER = rm -f
 	@printf "\033[0;3%dm%d\033[0m" "$(COLOR_YELLOW)" "$(nb)"
 	@printf "\033[0;3%dm] -ready\033[0m\n" "$(COLOR_LIGHT_BLUE)"
 	@printf "\033[0;3%dmCompiling... \033[0m" "$(COLOR_BLUE)"
-	@if ( ${COMPILER} ${CFLAGS} ${HEADERS} -I/usr/include -Imlx_linux -O3 -c $< -o ${<:.c=.o} );\
+	@if ( ${COMPILER} ${HEADERS} -I/usr/include -Imlx_linux -O3 -c $< -o ${<:.c=.o} );\
 	then; printf "\033[0;3%dmSUCCESS\033[0m\n" "$(COLOR_GREEN)";\
 	else; printf "\033[0;3%dmFAILURE\033[0m\n" "$(COLOR_RED)";\
 	fi
@@ -45,7 +45,7 @@ CLEANER = rm -f
 
 
 ${NAME}: ${OBJECTS}
-	@${COMPILER} ${CFLAGS} ${OBJECTS} ${HEADERS} ${LFLAGS} -o ${NAME}
+	@${COMPILER} ${OBJECTS} ${HEADERS} ${LFLAGS} -o ${NAME}
 	@printf "\033[0;39m   (づ ￣ ³￣)づ   "
 	@printf "\033[0;34mC "
 	@printf "\033[0;36mO "
