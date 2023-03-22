@@ -6,7 +6,7 @@
 /*   By: fbrisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 10:15:37 by fbrisson          #+#    #+#             */
-/*   Updated: 2023/03/21 15:12:18 by fbrisson         ###   ########.fr       */
+/*   Updated: 2023/03/22 15:53:47 by fbrisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,39 +18,6 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 
 	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
 	*(unsigned int *)dst = color;
-}
-
-int	handle_no_event(void *data)
-{
-	return (0);
-}
-
-int	handle_keypress(int keycode, t_data *data)
-{
-	if (keycode == 65307)
-		mlx_destroy_window(data->mlx_ptr, data->mlx_window);
-	printf("key pressed : %d\n", keycode);
-	return (0);
-}
-
-int	handle_keyrelease(int keycode, void *data)
-{
-	printf("key released : %d\n", keycode);
-	return (0);
-}
-
-int	handle_mouse_click(int keycode, void *data)
-{
-	
-}
-
-int	handle_mouse_motion(int x, int y, void *data)
-{
-	if ((x < 0) || (y < 0) || (x > WINDOW_HEIGHT) || (y > WINDOW_HEIGHT))
-		printf("ciao mon gars\n");
-	else
-		printf("bienvenue maggle\n");
-	return (0);
 }
 
 int	main(void)
@@ -76,20 +43,25 @@ int	main(void)
 
 	mlx_loop_hook(data.mlx_ptr, &handle_no_event, &data);
 	mlx_hook(data.mlx_window, 2, 1L << 0, &handle_keypress, &data);
-	mlx_hook(data.mlx_window, 6, 1L << 6, &handle_mouse_motion, &data);
+	//mlx_hook(data.mlx_window, 6, 1L << 6, &handle_mouse_motion, &data);
+	mlx_hook(data.mlx_window, 17, 0, &handle_mouse_action, &data);
 
 	// HAVING FUN WITH SHAPES AND COLORS
 
-	ratio_rectangle(img, WINDOW_WIDTH, WINDOW_HEIGHT, 0x004B0082);
+	//ratio_rectangle(img, WINDOW_WIDTH, WINDOW_HEIGHT, 0x004B0082);
 
-	bresenham_circle(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, 0x00E6E6FA);
-	bresenham_surligner(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, add_shade(0.15, 0x00CD853F));
+	//bresenham_circle(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, 0x00E6E6FA);
+	//bresenham_surligner(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, add_shade(0.15, 0x00CD853F));
 
-	triforce_color = 0x00DAA520;
-	triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.25, add_shade(0.99, triforce_color));
-	triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 1.17, WINDOW_HEIGHT * 0.45, add_shade(0.96, triforce_color));
-	triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 0.83, WINDOW_HEIGHT * 0.45, add_shade(0.93, triforce_color));
-	triforce_surligner(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 * 0.50, add_shade(0.5, 0x004B0082));
+	//triforce_color = 0x00DAA520;
+	//triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.25, add_shade(0.99, triforce_color));
+	//triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 1.17, WINDOW_HEIGHT * 0.45, add_shade(0.96, triforce_color));
+	//triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 0.83, WINDOW_HEIGHT * 0.45, add_shade(0.93, triforce_color));
+	//triforce_surligner(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 * 0.50, add_shade(0.5, 0x004B0082));
+
+	// MANDELBROT 1
+
+	mandelbrot_algo(img, 0, 0);
 
 	// SEND IMAGE TO MLX WINDOW
 
