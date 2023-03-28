@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbrisson <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fbrisson <fbrisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 10:15:37 by fbrisson          #+#    #+#             */
-/*   Updated: 2023/03/22 15:53:47 by fbrisson         ###   ########.fr       */
+/*   Updated: 2023/03/28 15:07:10 by fbrisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,28 +23,38 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 int	main(void)
 {
 	t_data		img;
-	t_data		data;
+	t_fract		*fdata;
 	int	triforce_color;
 
 	// INITIALIZING THE MLX WINDOW
 
-	data.mlx_ptr = mlx_init();
-	if (data.mlx_ptr == NULL)
+	fdata = malloc(sizeof(*fdata));
+	if (!fdata)
+		return (0);
+	fdata->mlx_ptr = mlx_init();
+	if (fdata->mlx_ptr == NULL)
 		return (0);
 
-	data.mlx_window = mlx_new_window(data.mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "FRACTOL DE FOU EN VRAI");
-	if (data.mlx_window == NULL)
-		return (free(data.mlx_window), 0);
+	fdata->mlx_window = mlx_new_window(fdata->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "FRACTOL DE FOU EN VRAI");
+	if (fdata->mlx_window == NULL)
+		return (0);
+	
+	printf("INITIALIZING MLX WINDOW (PART 1) : OK \n");
 
-	img.img = mlx_new_image(data.mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
+	img.img = mlx_new_image(fdata->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
+
+	fdata->img = &img;
+	init_params(fdata);
+
+	printf("INITIALIZING MLX WINDOW (PART 2) : OK \n");
 
 	// SETTING UP EVENTS
 
-	mlx_loop_hook(data.mlx_ptr, &handle_no_event, &data);
-	mlx_hook(data.mlx_window, 2, 1L << 0, &handle_keypress, &data);
-	//mlx_hook(data.mlx_window, 6, 1L << 6, &handle_mouse_motion, &data);
-	mlx_hook(data.mlx_window, 17, 0, &handle_mouse_action, &data);
+	mlx_loop_hook(fdata->mlx_ptr, &handle_no_event, fdata);
+	mlx_hook(fdata->mlx_window, 2, 1L << 0, &handle_keypress, fdata);
+	//mlx_hook(fdata->mlx_window, 6, 1L << 6, &handle_mouse_motion, fdata);
+	mlx_hook(fdata->mlx_window, 17, 0, &handle_mouse_action, fdata);
 
 	// HAVING FUN WITH SHAPES AND COLORS
 
@@ -61,20 +71,19 @@ int	main(void)
 
 	// MANDELBROT 1
 
-	mandelbrot_algo(img, 0, 0);
+	mandelbrot_drawer(WINDOW_WIDTH - WINDOW_WIDTH, WINDOW_HEIGHT - WINDOW_HEIGHT, fdata);
 
 	// SEND IMAGE TO MLX WINDOW
 
-	mlx_put_image_to_window(data.mlx_ptr, data.mlx_window, img.img, 0, 0);
+	//mlx_put_image_to_window(fdata->mlx_ptr, fdata->mlx_window, &fdata->img, 0, 0);
 
 	// STARTING THE LOOP
 
-	mlx_loop(data.mlx_ptr);
+	mlx_loop(fdata->mlx_ptr);
 
 	// HANDLING END OF PROGRAM
 
-	mlx_destroy_image(data.mlx_ptr, img.img);
-	mlx_destroy_display(data.mlx_ptr);
-	free(data.mlx_ptr);
+	//mlx_destroy_image(fdata->mlx_ptr, img.img);
+	//mlx_destroy_display(fdata->mlx_ptr);
 	return (0);
 }

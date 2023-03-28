@@ -6,7 +6,7 @@
 /*   By: fbrisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 09:17:43 by fbrisson          #+#    #+#             */
-/*   Updated: 2023/03/22 12:53:08 by fbrisson         ###   ########.fr       */
+/*   Updated: 2023/03/28 13:24:00 by fbrisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	handle_no_event(void *data)
 	return (0);
 }
 
-int	handle_keypress(int keycode, t_data *data)
+int	handle_keypress(int keycode, t_fract *data)
 {
 	if (keycode == 65307)
 		mlx_destroy_window(data->mlx_ptr, data->mlx_window);
@@ -37,7 +37,7 @@ int	handle_mouse_motion(int x, int y, void *data)
 	return (0);
 }
 
-int	handle_mouse_action(t_data *data)
+int	handle_mouse_action(t_fract *data)
 {
 	mlx_destroy_window(data->mlx_ptr, data->mlx_window);
 	printf("clicked exit");

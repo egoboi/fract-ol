@@ -6,7 +6,7 @@
 #    By: fbrisson <fbrisson@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/28 12:42:06 by fbrisson          #+#    #+#              #
-#    Updated: 2023/03/22 14:15:33 by fbrisson         ###   ########.fr        #
+#    Updated: 2023/03/28 15:03:52 by fbrisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ SOURCES = sources/main.c              		\
 	  sources/colors_handler.c		\
 	  sources/basic_forms.c			\
 	  sources/events_handler.c		\
-	  sources/mandelbrot.c		\
+	  sources/mandelbrot.c			\
+	  sources/init.c			\
 
 OBJECTS = ${SOURCES:.c=.o}
 
