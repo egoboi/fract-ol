@@ -6,7 +6,7 @@
 #    By: fbrisson <fbrisson@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/28 12:42:06 by fbrisson          #+#    #+#              #
-#    Updated: 2023/03/28 15:03:52 by fbrisson         ###   ########.fr        #
+#    Updated: 2023/04/04 09:57:27 by fbrisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,10 +16,12 @@ NAME = fractol
 
 SOURCES = sources/main.c              		\
 	  sources/colors_handler.c		\
-	  sources/basic_forms.c			\
 	  sources/events_handler.c		\
 	  sources/mandelbrot.c			\
 	  sources/init.c			\
+	  sources/viewport_settings.c		\
+	  sources/rendering.c			\
+	  sources/utilitaries.c			\
 
 OBJECTS = ${SOURCES:.c=.o}
 

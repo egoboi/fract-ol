@@ -6,80 +6,38 @@
 /*   By: fbrisson <fbrisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 10:15:37 by fbrisson          #+#    #+#             */
-/*   Updated: 2023/03/28 15:07:10 by fbrisson         ###   ########.fr       */
+/*   Updated: 2023/04/04 15:51:04 by fbrisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+int	main(int ac, char **av)
 {
-	char	*dst;
+	t_fract		fdata;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int *)dst = color;
-}
+	//if (ac < 2)
+	//	print_helper();
 
-int	main(void)
-{
-	t_data		img;
-	t_fract		*fdata;
-	int	triforce_color;
+	init_params(&fdata);
+	init_img(&fdata);
+	render(&fdata);
 
-	// INITIALIZING THE MLX WINDOW
+	// SETTING UP HOOKS
 
-	fdata = malloc(sizeof(*fdata));
-	if (!fdata)
-		return (0);
-	fdata->mlx_ptr = mlx_init();
-	if (fdata->mlx_ptr == NULL)
-		return (0);
+	mlx_loop_hook(fdata.mlx_ptr, &handle_no_event, &fdata);
+	mlx_hook(fdata.mlx_window, 2, 1L << 0, &handle_keypress, &fdata);
+	mlx_hook(fdata.mlx_window, 6, 1L << 6, &handle_mouse, &fdata);
+	mlx_hook(fdata.mlx_window, 4, 1L << 2, &handle_mouse, &fdata);
+	mlx_hook(fdata.mlx_window, 17, 0, &handle_mouse_exit, &fdata);
 
-	fdata->mlx_window = mlx_new_window(fdata->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT, "FRACTOL DE FOU EN VRAI");
-	if (fdata->mlx_window == NULL)
-		return (0);
-	
-	printf("INITIALIZING MLX WINDOW (PART 1) : OK \n");
+	printf("INITIALIZING <HOOKS> : [\e[1;32mOK\e[0m] \n");
 
-	img.img = mlx_new_image(fdata->mlx_ptr, WINDOW_WIDTH, WINDOW_HEIGHT);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length, &img.endian);
-
-	fdata->img = &img;
-	init_params(fdata);
-
-	printf("INITIALIZING MLX WINDOW (PART 2) : OK \n");
-
-	// SETTING UP EVENTS
-
-	mlx_loop_hook(fdata->mlx_ptr, &handle_no_event, fdata);
-	mlx_hook(fdata->mlx_window, 2, 1L << 0, &handle_keypress, fdata);
-	//mlx_hook(fdata->mlx_window, 6, 1L << 6, &handle_mouse_motion, fdata);
-	mlx_hook(fdata->mlx_window, 17, 0, &handle_mouse_action, fdata);
-
-	// HAVING FUN WITH SHAPES AND COLORS
-
-	//ratio_rectangle(img, WINDOW_WIDTH, WINDOW_HEIGHT, 0x004B0082);
-
-	//bresenham_circle(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, 0x00E6E6FA);
-	//bresenham_surligner(img, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_HEIGHT * 0.35, add_shade(0.15, 0x00CD853F));
-
-	//triforce_color = 0x00DAA520;
-	//triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.25, add_shade(0.99, triforce_color));
-	//triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 1.17, WINDOW_HEIGHT * 0.45, add_shade(0.96, triforce_color));
-	//triforce_maker(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2 * 0.83, WINDOW_HEIGHT * 0.45, add_shade(0.93, triforce_color));
-	//triforce_surligner(img, WINDOW_HEIGHT, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 * 0.50, add_shade(0.5, 0x004B0082));
-
-	// MANDELBROT 1
-
-	mandelbrot_drawer(WINDOW_WIDTH - WINDOW_WIDTH, WINDOW_HEIGHT - WINDOW_HEIGHT, fdata);
-
-	// SEND IMAGE TO MLX WINDOW
-
-	//mlx_put_image_to_window(fdata->mlx_ptr, fdata->mlx_window, &fdata->img, 0, 0);
+	printf("INITIALIZING MANDELBROT SET : [\e[1;32mOK\e[0m] \n");
 
 	// STARTING THE LOOP
 
-	mlx_loop(fdata->mlx_ptr);
+	mlx_loop(fdata.mlx_ptr);
 
 	// HANDLING END OF PROGRAM
 
